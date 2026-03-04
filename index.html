@@ -3,166 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <title>Happy Holi My Love ❤️</title>
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
 body{
 margin:0;
 overflow:hidden;
-background:black;
 font-family:Arial;
+background:radial-gradient(circle at center,#1a0026,#000);
 color:white;
 text-align:center;
 }
 
-/* Canvas */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-3;
+/* Smooth fade intro */
+body{animation:fade 2s;}
+@keyframes fade{from{opacity:0;}to{opacity:1;}}
+
+canvas{position:fixed;top:0;left:0;}
+
+.container{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+z-index:2;
 }
 
-/* Small floating hearts */
+/* Premium photo */
+.photo{
+width:300px;
+max-width:90vw;
+border-radius:25px;
+box-shadow:0 0 70px rgba(255,0,150,0.9);
+position:relative;
+}
+
+/* Face powder canvas */
+.faceBlast{
+position:absolute;
+top:18%;
+left:25%;
+width:50%;
+height:38%;
+pointer-events:none;
+}
+
+/* Button */
+button{
+margin-top:25px;
+padding:15px 40px;
+font-size:20px;
+border:none;
+border-radius:50px;
+background:linear-gradient(45deg,#ff0080,#ff8c00,#00f2ff);
+color:white;
+box-shadow:0 0 30px hotpink;
+}
+
+/* Auto realistic hand */
+.hand{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+bottom:-160px;
+width:95px;
+animation:handMove 3s forwards;
+}
+@keyframes handMove{
+0%{bottom:-160px;}
+100%{bottom:50px;}
+}
+
+/* Typing letter */
+.letter{
+margin-top:30px;
+max-width:340px;
+font-size:18px;
+min-height:140px;
+white-space:pre-line;
+}
+
+/* Tiny multi-color hearts */
 .heart{
 position:absolute;
-width:6px;
-height:6px;
-background:pink;
+width:5px;
+height:5px;
 transform:rotate(45deg);
-animation:float 6s linear infinite;
-opacity:0.8;
+animation:float 8s linear infinite;
 }
-.heart:before,
-.heart:after{
+.heart:before,.heart:after{
 content:"";
 position:absolute;
-width:6px;
-height:6px;
-background:pink;
+width:5px;
+height:5px;
 border-radius:50%;
 }
-.heart:before{top:-3px;}
-.heart:after{left:-3px;}
+.heart:before{top:-2.5px;}
+.heart:after{left:-2.5px;}
 
 @keyframes float{
 0%{transform:translateY(100vh) rotate(45deg);}
 100%{transform:translateY(-10vh) rotate(45deg);}
 }
 
-/* Center box */
-.container{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-}
-
-/* Photo */
-.photo{
-width:240px;
-border-radius:20px;
-box-shadow:0 0 40px hotpink;
-position:relative;
-overflow:hidden;
-animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-from{box-shadow:0 0 20px hotpink;}
-to{box-shadow:0 0 60px red;}
-}
-
-/* Gulal splash */
-.gulal{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:radial-gradient(circle at 50% 40%, rgba(255,0,0,0.8), rgba(255,255,0,0.6), rgba(0,255,255,0.4), transparent);
-opacity:0;
-transition:1s;
-}
-
-/* Button */
-button{
-margin-top:20px;
-padding:14px 35px;
-font-size:20px;
-border:none;
-border-radius:40px;
-background:linear-gradient(45deg,#ff0080,#ff8c00,#00f2ff);
-color:white;
-cursor:pointer;
-box-shadow:0 0 20px pink;
-animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-0%{transform:scale(1);}
-50%{transform:scale(1.1);}
-100%{transform:scale(1);}
-}
-
-/* Animated Hand */
-.hand{
-position:absolute;
-left:50%;
-transform:translateX(-50%);
-bottom:-120px;
-font-size:70px;
-animation:press 4s infinite;
-}
-
-@keyframes press{
-0%{bottom:-120px;}
-50%{bottom:30px;}
-100%{bottom:-120px;}
-}
-
-/* Letter */
-.letter{
-margin-top:30px;
-max-width:300px;
-padding:15px;
-font-size:18px;
-}
-
+/* Flash */
 .flash{
 position:fixed;
 width:100%;
 height:100%;
 background:white;
 opacity:0;
-z-index:-1;
+z-index:5;
+transition:0.3s;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="flash" id="flash"></div>
-<canvas id="canvas"></canvas>
+
+<!-- Background Smoke -->
+<canvas id="smoke"></canvas>
 
 <div class="container">
 
 <div style="position:relative;">
 <img src="yourphoto.jpg" class="photo">
-<div class="gulal" id="gulalLayer"></div>
+<canvas class="faceBlast" id="faceBlast"></canvas>
 </div>
 
 <button id="btn">Happy Holi ❤️</button>
-<div class="hand">🤚</div>
+<img src="https://i.imgur.com/6o5V7XK.png" class="hand">
 
-<div class="letter">
-My Love ❤️<br><br>
-Iss Holi par main chahta hoon ki tumhari life  
-har din naye rang se bhari rahe 🌈  
-Jaise aaj tumhare face par gulal laga hai,  
-waise hi khushi tumhari zindagi me hamesha chamakti rahe 💕  
-Happy Holi meri jaan 💖
-</div>
+<div class="letter" id="letter"></div>
 
 </div>
 
@@ -170,64 +144,104 @@ Happy Holi meri jaan 💖
 
 <script>
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+/* Cinematic Smoke Background */
+const smoke=document.getElementById("smoke");
+const sctx=smoke.getContext("2d");
+smoke.width=innerWidth;
+smoke.height=innerHeight;
 
 let particles=[];
-
-/* Gulal particles */
-function createParticles(){
-for(let i=0;i<200;i++){
+for(let i=0;i<120;i++){
 particles.push({
-x:canvas.width/2,
-y:canvas.height/2,
-size:Math.random()*5+2,
-speedX:(Math.random()-0.5)*10,
-speedY:(Math.random()-0.5)*10,
-color:`hsl(${Math.random()*360},100%,50%)`
+x:Math.random()*smoke.width,
+y:Math.random()*smoke.height,
+size:Math.random()*50+30,
+speed:Math.random()*0.4+0.2,
+color:`hsla(${Math.random()*360},100%,50%,0.04)`
 });
 }
-}
 
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-particles.forEach((p,index)=>{
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-ctx.fillStyle=p.color;
-ctx.fill();
-p.x+=p.speedX;
-p.y+=p.speedY;
-p.size*=0.96;
-if(p.size<0.5) particles.splice(index,1);
+function animateSmoke(){
+sctx.clearRect(0,0,smoke.width,smoke.height);
+particles.forEach(p=>{
+sctx.beginPath();
+sctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+sctx.fillStyle=p.color;
+sctx.fill();
+p.y-=p.speed;
+if(p.y<0)p.y=smoke.height;
 });
-requestAnimationFrame(animate);
+requestAnimationFrame(animateSmoke);
 }
-animate();
+animateSmoke();
 
-/* Hearts */
-for(let i=0;i<60;i++){
+/* Tiny colorful hearts */
+for(let i=0;i<70;i++){
 let h=document.createElement("div");
 h.className="heart";
+let c=`hsl(${Math.random()*360},100%,70%)`;
+h.style.background=c;
 h.style.left=Math.random()*100+"vw";
-h.style.animationDuration=(3+Math.random()*5)+"s";
+h.style.top=Math.random()*100+"vh";
+h.style.animationDuration=(5+Math.random()*5)+"s";
 document.body.appendChild(h);
 }
 
-/* Button Action */
+/* Auto press after 3 sec */
+setTimeout(()=>{document.getElementById("btn").click();},3000);
+
 let btn=document.getElementById("btn");
-let gulal=document.getElementById("gulalLayer");
 let music=document.getElementById("music");
 let flash=document.getElementById("flash");
+let letter=document.getElementById("letter");
 
 btn.addEventListener("click",()=>{
-createParticles();
-gulal.style.opacity="1";
+
 music.play();
+
+/* Flash */
 flash.style.opacity="0.8";
-setTimeout(()=>{flash.style.opacity="0";},200);
+setTimeout(()=>{flash.style.opacity="0";},300);
+
+/* Face powder burst */
+const face=document.getElementById("faceBlast");
+const fctx=face.getContext("2d");
+face.width=face.offsetWidth;
+face.height=face.offsetHeight;
+
+for(let i=0;i<250;i++){
+let angle=Math.random()*2*Math.PI;
+let dist=Math.random()*face.width/2;
+fctx.beginPath();
+fctx.arc(
+face.width/2+Math.cos(angle)*dist,
+face.height/2+Math.sin(angle)*dist,
+Math.random()*3+2,
+0,2*Math.PI);
+fctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
+fctx.globalAlpha=0.9;
+fctx.fill();
+}
+
+/* Typing animation */
+let text=`My Love ❤️
+
+Iss Holi par main chahta hoon ki
+tumhari zindagi har din naye rang se bhari rahe 🌈
+Jaise aaj gulal tumhare chehre ko saja raha hai,
+waise hi khushi tumhari life ko roshan karti rahe 💕
+Happy Holi meri jaan ❤️`;
+
+let i=0;
+function type(){
+if(i<text.length){
+letter.innerHTML+=text.charAt(i);
+i++;
+setTimeout(type,30);
+}
+}
+type();
+
 });
 
 </script>
