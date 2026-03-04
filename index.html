@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Happy Holi My Love ❤️</title>
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:black;
+font-family:Arial;
+color:white;
+text-align:center;
+}
+
+/* Canvas */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-3;
+}
+
+/* Small floating hearts */
+.heart{
+position:absolute;
+width:6px;
+height:6px;
+background:pink;
+transform:rotate(45deg);
+animation:float 6s linear infinite;
+opacity:0.8;
+}
+.heart:before,
+.heart:after{
+content:"";
+position:absolute;
+width:6px;
+height:6px;
+background:pink;
+border-radius:50%;
+}
+.heart:before{top:-3px;}
+.heart:after{left:-3px;}
+
+@keyframes float{
+0%{transform:translateY(100vh) rotate(45deg);}
+100%{transform:translateY(-10vh) rotate(45deg);}
+}
+
+/* Center box */
+.container{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+}
+
+/* Photo */
+.photo{
+width:240px;
+border-radius:20px;
+box-shadow:0 0 40px hotpink;
+position:relative;
+overflow:hidden;
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{box-shadow:0 0 20px hotpink;}
+to{box-shadow:0 0 60px red;}
+}
+
+/* Gulal splash */
+.gulal{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:radial-gradient(circle at 50% 40%, rgba(255,0,0,0.8), rgba(255,255,0,0.6), rgba(0,255,255,0.4), transparent);
+opacity:0;
+transition:1s;
+}
+
+/* Button */
+button{
+margin-top:20px;
+padding:14px 35px;
+font-size:20px;
+border:none;
+border-radius:40px;
+background:linear-gradient(45deg,#ff0080,#ff8c00,#00f2ff);
+color:white;
+cursor:pointer;
+box-shadow:0 0 20px pink;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.1);}
+100%{transform:scale(1);}
+}
+
+/* Animated Hand */
+.hand{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+bottom:-120px;
+font-size:70px;
+animation:press 4s infinite;
+}
+
+@keyframes press{
+0%{bottom:-120px;}
+50%{bottom:30px;}
+100%{bottom:-120px;}
+}
+
+/* Letter */
+.letter{
+margin-top:30px;
+max-width:300px;
+padding:15px;
+font-size:18px;
+}
+
+.flash{
+position:fixed;
+width:100%;
+height:100%;
+background:white;
+opacity:0;
+z-index:-1;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="flash" id="flash"></div>
+<canvas id="canvas"></canvas>
+
+<div class="container">
+
+<div style="position:relative;">
+<img src="yourphoto.jpg" class="photo">
+<div class="gulal" id="gulalLayer"></div>
+</div>
+
+<button id="btn">Happy Holi ❤️</button>
+<div class="hand">🤚</div>
+
+<div class="letter">
+My Love ❤️<br><br>
+Iss Holi par main chahta hoon ki tumhari life  
+har din naye rang se bhari rahe 🌈  
+Jaise aaj tumhare face par gulal laga hai,  
+waise hi khushi tumhari zindagi me hamesha chamakti rahe 💕  
+Happy Holi meri jaan 💖
+</div>
+
+</div>
+
+<audio id="music" src="holi.mp3"></audio>
+
+<script>
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+/* Gulal particles */
+function createParticles(){
+for(let i=0;i<200;i++){
+particles.push({
+x:canvas.width/2,
+y:canvas.height/2,
+size:Math.random()*5+2,
+speedX:(Math.random()-0.5)*10,
+speedY:(Math.random()-0.5)*10,
+color:`hsl(${Math.random()*360},100%,50%)`
+});
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach((p,index)=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fillStyle=p.color;
+ctx.fill();
+p.x+=p.speedX;
+p.y+=p.speedY;
+p.size*=0.96;
+if(p.size<0.5) particles.splice(index,1);
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+/* Hearts */
+for(let i=0;i<60;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=(3+Math.random()*5)+"s";
+document.body.appendChild(h);
+}
+
+/* Button Action */
+let btn=document.getElementById("btn");
+let gulal=document.getElementById("gulalLayer");
+let music=document.getElementById("music");
+let flash=document.getElementById("flash");
+
+btn.addEventListener("click",()=>{
+createParticles();
+gulal.style.opacity="1";
+music.play();
+flash.style.opacity="0.8";
+setTimeout(()=>{flash.style.opacity="0";},200);
+});
+
+</script>
+
+</body>
+</html>
